@@ -1,0 +1,67 @@
+{
+  "checked_dates": "2026-11-03/2026-11-04",
+  "method": "Primary public pricing; compute only, 730 hours/month; no commitment, no Spot; taxes and ancillary services excluded.",
+  "prices": [
+    {
+      "provider": "AWS",
+      "region": "af-south-1",
+      "instance": "m5.large",
+      "vCPU": 2,
+      "GiB": 8,
+      "currency": "USD",
+      "hourly": 0.127,
+      "monthly_730h": 92.71,
+      "sku": "FCHRXZ8W7PYBSMC9",
+      "effectiveDate": "2026-11-01",
+      "source": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/af-south-1/index.json"
+    },
+    {
+      "provider": "GCP",
+      "region": "africa-south1",
+      "instance": "e2-standard-2",
+      "vCPU": 2,
+      "GiB": 8,
+      "currency": "USD",
+      "hourly": 0.07371546,
+      "monthly_730h": 53.8122858,
+      "source": "https://cloud.google.com/products/compute/pricing/general-purpose?hl=en",
+      "extraction": "Embedded pricing table keyed Johannesburg (africa-south1), standard on-demand first column."
+    },
+    {
+      "provider": "Azure",
+      "region": "southafricanorth",
+      "instance": "Standard_D2as_v5",
+      "vCPU": 2,
+      "GiB": 8,
+      "currency": "USD",
+      "hourly": 0.115,
+      "monthly_730h": 83.95,
+      "source": "https://prices.azure.com/api/retail/prices",
+      "filter": "armRegionName eq 'southafricanorth' and armSkuName eq 'Standard_D2as_v5' and priceType eq 'Consumption'",
+      "productName": "Virtual Machines Dasv5 Series",
+      "skuName": "Standard_D2as_v5"
+    },
+    {
+      "provider": "Layer3",
+      "region": "Nigeria; specific compute site to confirm",
+      "vCPU": 2,
+      "RAM_GB": 4,
+      "SSD_GB": 128,
+      "currency": "NGN",
+      "monthly": 39903.05,
+      "source": "https://www.layer3.cloud/pricing",
+      "plan": "Basic MRC"
+    },
+    {
+      "provider": "Angani",
+      "region": "Kenya site to confirm",
+      "vCPU": 4,
+      "RAM_GB": 8,
+      "disk_GB": 160,
+      "currency": "KES",
+      "monthly": 8000,
+      "source": "https://angani.africa/",
+      "plan": "Linux EXTRA LARGE"
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-a-ng
+  displayName: PAY-A-NG
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ng
+  indicator:
+    metadata:
+      name: pay-a-ng-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_a",country="ng",provider="flutterwave",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_a",country="ng",provider="flutterwave"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.999
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-l-ng
+  displayName: PAY-L-NG
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ng
+  indicator:
+    metadata:
+      name: pay-l-ng-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_l",country="ng",provider="flutterwave",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_l",country="ng",provider="flutterwave"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-e-ng
+  displayName: PAY-E-NG
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ng
+  indicator:
+    metadata:
+      name: pay-e-ng-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_e",country="ng",provider="flutterwave",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_e",country="ng",provider="flutterwave"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.995
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-c-ng
+  displayName: PAY-C-NG
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ng
+  indicator:
+    metadata:
+      name: pay-c-ng-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_c",country="ng",provider="flutterwave",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_c",country="ng",provider="flutterwave"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.999
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-a-ke
+  displayName: PAY-A-KE
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ke
+  indicator:
+    metadata:
+      name: pay-a-ke-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_a",country="ke",provider="mpesa",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_a",country="ke",provider="mpesa"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.999
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-l-ke
+  displayName: PAY-L-KE
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ke
+  indicator:
+    metadata:
+      name: pay-l-ke-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_l",country="ke",provider="mpesa",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_l",country="ke",provider="mpesa"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-e-ke
+  displayName: PAY-E-KE
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ke
+  indicator:
+    metadata:
+      name: pay-e-ke-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_e",country="ke",provider="mpesa",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_e",country="ke",provider="mpesa"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.995
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: pay-c-ke
+  displayName: PAY-C-KE
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: payments-ke
+  indicator:
+    metadata:
+      name: pay-c-ke-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_c",country="ke",provider="mpesa",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="pay_c",country="ke",provider="mpesa"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.999

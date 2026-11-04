@@ -1,0 +1,131 @@
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: cat-a-ng
+  displayName: CAT-A-NG
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: catalog-ng
+  indicator:
+    metadata:
+      name: cat-a-ng-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_a",country="ng",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_a",country="ng"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.999
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: cat-l-ng
+  displayName: CAT-L-NG
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: catalog-ng
+  indicator:
+    metadata:
+      name: cat-l-ng-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_l",country="ng",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_l",country="ng"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: cat-a-ke
+  displayName: CAT-A-KE
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: catalog-ke
+  indicator:
+    metadata:
+      name: cat-a-ke-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_a",country="ke",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_a",country="ke"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.999
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: cat-l-ke
+  displayName: CAT-L-KE
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: catalog-ke
+  indicator:
+    metadata:
+      name: cat-l-ke-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_l",country="ke",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="cat_l",country="ke"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99

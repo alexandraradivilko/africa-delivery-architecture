@@ -1,0 +1,23 @@
+flowchart LR
+    U[Браузер: RUM без PII] --> I[Входной контур и backend]
+    X[Независимые DNS/TLS/HTTP probes] --> I
+    I --> DB[(БД: заказы, outbox, журнал SLI)]
+    DB --> W[Worker и сверка исходов]
+    W --> P[Платёжные, логистические и коммуникационные партнёры]
+    P --> I
+    subgraph Local[Локальная телеметрия одной страны]
+      I -->|метрики и контекст| O[OpenTelemetry Collector]
+      W -->|метрики, логи, spans| O
+      DB --> E[Exporter БД и исходов SLI]
+      O -->|экспорт метрик для scrape| M[Prometheus]
+      E --> M
+      O --> L[Loki: структурированные логи]
+      O --> T[Tempo: данные трассировки]
+      M --> G[Grafana: сервисные дашборды]
+      L --> G
+      T --> G
+      M --> A[Alertmanager]
+    end
+    X -->|статус проверки| M
+    A --> D[Основной и резервный дежурные]
+    H[Внешний heartbeat без payload] -->|пропал сигнал| D
