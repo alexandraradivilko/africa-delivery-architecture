@@ -1,0 +1,59 @@
+@startuml
+left to right direction
+skinparam shadowing false
+title Africa Delivery — сценарии ограниченного MVP
+actor "Покупатель" as buyer
+actor "Продавец" as seller
+actor "Оператор" as ops
+actor "CEO / инвестор" as ceo
+actor "Лицензированный\nплатёжный провайдер" as pay
+actor "Логистический\nпартнёр" as delivery
+actor "Провайдер\nуведомлений" as notify
+rectangle "Africa Delivery" {
+ usecase "Просмотреть каталог\nи найти товар" as catalog
+ usecase "Оформить заказ" as order
+ usecase "Проверить и зарезервировать\nостаток" as stock
+ usecase "Оплатить заказ" as payment
+ usecase "Проверить результат оплаты\nи выполнить сверку" as reconcile
+ usecase "Передать оплаченный\nзаказ в доставку" as dispatch
+ usecase "Посмотреть статус\nзаказа" as status
+ usecase "Получить уведомление" as notice
+ usecase "Запросить возврат" as refundrequest
+ usecase "Проверить возврат\nи инициировать возмещение" as refund
+ usecase "Зарегистрировать и проверить\nпродавца с участием оператора" as onboard
+ usecase "Загрузить и модерировать\nпредложения продавца" as offers
+ usecase "Проверить выплату\nпродавцу" as payout
+ usecase "Просмотреть показатели\nзаказов и продаж" as report
+}
+buyer --> catalog
+buyer --> order
+buyer --> payment
+buyer --> status
+buyer --> notice
+buyer --> refundrequest
+order ..> stock : <<include>>
+payment --> pay
+ops --> reconcile
+reconcile --> pay
+ops --> dispatch
+dispatch --> delivery
+notice --> notify
+ops --> refund
+refund --> pay
+seller --> onboard
+ops --> onboard
+seller --> offers
+ops --> offers
+seller --> payout
+ops --> payout
+payout --> pay
+ceo --> report
+note bottom of order
+  Оплата — отдельный сценарий после создания заказа.
+  Отсутствие оплаты не означает успешную покупку.
+end note
+note bottom of refund
+  Возмещение после проверки и подтверждения провайдера.
+  «Мгновенно» не обещается; бизнес должен согласовать сроки.
+end note
+@enduml

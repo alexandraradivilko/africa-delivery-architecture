@@ -1,0 +1,131 @@
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: not-h-ng-sms
+  displayName: NOT-H-NG-SMS
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: notifications-ng
+  indicator:
+    metadata:
+      name: not-h-ng-sms-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ng",channel="sms",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ng",channel="sms"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: not-h-ng-whatsapp
+  displayName: NOT-H-NG-WHATSAPP
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: notifications-ng
+  indicator:
+    metadata:
+      name: not-h-ng-whatsapp-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ng",channel="whatsapp",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ng",channel="whatsapp"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: not-h-ke-sms
+  displayName: NOT-H-KE-SMS
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: notifications-ke
+  indicator:
+    metadata:
+      name: not-h-ke-sms-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ke",channel="sms",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ke",channel="sms"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99
+---
+apiVersion: openslo/v1
+kind: SLO
+metadata:
+  name: not-h-ke-whatsapp
+  displayName: NOT-H-KE-WHATSAPP
+  annotations:
+    africa-delivery.example/status: proposed
+    africa-delivery.example/evaluation-interval: 1m
+spec:
+  service: notifications-ke
+  indicator:
+    metadata:
+      name: not-h-ke-whatsapp-indicator
+    spec:
+      ratioMetric:
+        good:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ke",channel="whatsapp",result="good"}[1m]))
+        total:
+          metricSource:
+            type: Prometheus
+            spec:
+              query: sum(increase(sli_events_total{objective="not_h",country="ke",channel="whatsapp"}[1m]))
+        counter: false
+  timeWindow:
+    - duration: 30d
+      isRolling: true
+  budgetingMethod: Occurrences
+  objectives:
+    - target: 0.99

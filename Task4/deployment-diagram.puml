@@ -1,0 +1,96 @@
+@startuml
+title Africa Delivery — Deployment: HA внутри страны, локальный DR
+top to bottom direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam wrapWidth 200
+
+cloud "Пользователи\nСтрановые домены / HTTPS" as Users
+
+
+
+package "NG — Нигерия / кандидат Layer3\nЛагос: основной; Абуджа: предполагаемый DR" {
+  node "Основная площадка\nДва независимых домена отказа" as NGMAIN {
+    node "Входной путь HA\nTLS / health checks\nНезависимость LB проверяется" as NGLB
+    node "Домен A" as NGA {
+      artifact "Backend 1 + worker 1\nOCI / Go" as NGAPP1
+      database "PostgreSQL primary" as NGDB1
+    }
+    node "Домен B" as NGB {
+      artifact "Backend 2 + worker 2\nOCI / Go" as NGAPP2
+      database "PostgreSQL sync standby" as NGDB2
+    }
+    node "Локальные службы\nОбъекты, секреты, телеметрия\nИх HA проверяется отдельно" as NGOPS
+    NGLB --> NGAPP1 : HTTPS
+    NGLB --> NGAPP2 : HTTPS
+    NGAPP1 --> NGDB1 : SQL / единственный writer
+    NGAPP2 --> NGDB1 : SQL / единственный writer
+    NGDB1 --> NGDB2 : synchronous WAL
+    NGAPP1 --> NGOPS
+    NGAPP2 --> NGOPS
+  }
+  node "Третий домен quorum\nВ той же стране\nБез копии бизнес-данных" as NGQ
+  node "Резервная площадка внутри страны\nДругой ЦОД, готовые доступы и capacity" as NGDR {
+    database "Base backup + WAL\nВосстановимый лаг <=5 мин\nОтдельные права удаления" as NGCOPY
+    artifact "Резерв приложения / IaC\nЗапись отключена до fencing\nЦель DR: RTO <=60 мин" as NGREC
+    node "Recovery ключей и удалений\nОтдельный доступ, два хранителя" as NGKEY
+  }
+  NGDB1 ..> NGQ : quorum / fencing
+  NGDB2 ..> NGQ : quorum / fencing
+  NGDB1 --> NGCOPY : async archive WAL + backup
+  NGOPS --> NGDR : копии объектов и конфигурации
+  NGCOPY --> NGREC : restore / проверка / promotion
+  NGKEY --> NGREC : локальное восстановление
+}
+
+package "KE — Кения / кандидат Angani\nАдреса основного и резервного ЦОД подтверждаются договором" {
+  node "Основная площадка\nДва независимых домена отказа" as KEMAIN {
+    node "Входной путь HA\nTLS / health checks\nНезависимость LB проверяется" as KELB
+    node "Домен A" as KEA {
+      artifact "Backend 1 + worker 1\nOCI / Go" as KEAPP1
+      database "PostgreSQL primary" as KEDB1
+    }
+    node "Домен B" as KEB {
+      artifact "Backend 2 + worker 2\nOCI / Go" as KEAPP2
+      database "PostgreSQL sync standby" as KEDB2
+    }
+    node "Локальные службы\nОбъекты, секреты, телеметрия\nИх HA проверяется отдельно" as KEOPS
+    KELB --> KEAPP1 : HTTPS
+    KELB --> KEAPP2 : HTTPS
+    KEAPP1 --> KEDB1 : SQL / единственный writer
+    KEAPP2 --> KEDB1 : SQL / единственный writer
+    KEDB1 --> KEDB2 : synchronous WAL
+    KEAPP1 --> KEOPS
+    KEAPP2 --> KEOPS
+  }
+  node "Третий домен quorum\nВ той же стране\nБез копии бизнес-данных" as KEQ
+  node "Резервная площадка внутри страны\nДругой ЦОД, готовые доступы и capacity" as KEDR {
+    database "Base backup + WAL\nВосстановимый лаг <=5 мин\nОтдельные права удаления" as KECOPY
+    artifact "Резерв приложения / IaC\nЗапись отключена до fencing\nЦель DR: RTO <=60 мин" as KEREC
+    node "Recovery ключей и удалений\nОтдельный доступ, два хранителя" as KEKEY
+  }
+  KEDB1 ..> KEQ : quorum / fencing
+  KEDB2 ..> KEQ : quorum / fencing
+  KEDB1 --> KECOPY : async archive WAL + backup
+  KEOPS --> KEDR : копии объектов и конфигурации
+  KECOPY --> KEREC : restore / проверка / promotion
+  KEKEY --> KEREC : локальное восстановление
+}
+
+Users --> NGLB : ng-domain
+Users --> KELB : ke-domain
+
+package "ZA — следующий этап, не ресурсы MVP" {
+  node "AWS af-south-1\nBackend в двух AZ\nPostgreSQL HA, объекты, ключи локально" as ZA
+  node "Независимый DR в ЮАР\nПровайдер/площадка ещё не выбраны\nУсловие запуска ZA" as ZADR
+  ZA ..> ZADR : разрешённая локальная копия
+}
+
+legend bottom
+  Это требуемая топология, а не подтверждение наличия площадок или заказанных ресурсов.
+  NG и KE не резервируют друг друга. Запрещён автоматический зарубежный failover.
+  Quorum требует трёх независимых участников; losing quorum = остановка небезопасной записи.
+  Перед запуском: fencing, restore ключей/БД, измерение RTT, объёма и реального RTO/RPO.
+endlegend
+@enduml

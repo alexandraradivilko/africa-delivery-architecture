@@ -1,0 +1,72 @@
+@startuml
+title Africa Delivery — C4 Container: раздельные контуры данных
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultFontName Arial
+skinparam wrapWidth 220
+skinparam maxMessageSize 120
+skinparam rectangle {
+  BackgroundColor<<Container>> #EAF3FC
+  BorderColor<<Container>> #24689A
+  BackgroundColor<<External>> #EEEEEE
+}
+
+actor "Покупатель / продавец\nвыбирает страну обслуживания" as User
+actor "Оператор страны\nMFA, ограниченные права" as Operator
+rectangle "Адаптивный веб-интерфейс\n[Container: PWA / браузер]\nЛичные ответы: no-store" as Web <<Container>>
+rectangle "Публичные статические ресурсы\n[External: разрешённый CDN]\nБез персональных API;\nлоги CDN требуют проверки" as CDN <<External>>
+User --> Web : HTTPS
+Operator --> Web : back office
+Web --> CDN : очищенные фото / assets
+
+package "Нигерия — Layer3 Cloud, кандидат\nВсе private data, ключи и копии внутри NG" as NG {
+  rectangle "Backend NG\n[Container: Go]\nКаталог, заказ, IAM, согласия,\nплатёжный адаптер; локальный кеш" as NAPI <<Container>>
+  rectangle "Worker NG\n[Container: Go, тот же код]\nOutbox, сверка, уведомления" as NW <<Container>>
+  database "PostgreSQL NG\n[Container: SQL]\nПрофили, заказы, согласия, outbox" as NDB
+  rectangle "Закрытые объекты NG\n[Container: Object storage]\nДокументы; backup отдельно" as NO <<Container>>
+  rectangle "Телеметрия и секреты NG\n[Containers: локальные службы]\nБез глобального хранилища PII" as NT <<Container>>
+  NAPI --> NDB : SQL / транзакция с outbox
+  NW --> NDB : задачи / результаты
+  NAPI --> NO : HTTPS / RBAC
+  NAPI --> NT : метрики / секреты
+  NW --> NT : метрики / секреты
+}
+package "Кения — местный IaaS, кандидат Angani\nТочные площадки — условие договора" as KE {
+  rectangle "Backend KE\n[Container: Go]\nТе же модули; отдельные данные" as KAPI <<Container>>
+  rectangle "Worker KE\n[Container: Go, тот же код]\nOutbox, сверка, уведомления" as KW <<Container>>
+  database "PostgreSQL KE\n[Container: SQL]\nПрофили, заказы, согласия, outbox" as KDB
+  rectangle "Закрытые объекты KE\n[Container: Object storage]" as KO <<Container>>
+  rectangle "Телеметрия и секреты KE\n[Containers: локальные службы]" as KT <<Container>>
+  KAPI --> KDB : SQL / транзакция с outbox
+  KW --> KDB : задачи / результаты
+  KAPI --> KO : HTTPS / RBAC
+  KAPI --> KT : метрики / секреты
+  KW --> KT : метрики / секреты
+}
+package "ЮАР — будущий этап, не MVP\nAWS af-south-1 / отдельный контур ZA" as ZA #F6F6F6 {
+  rectangle "Backend + worker ZA\n[Containers: Go]\nТа же модель; до запуска только синтетика" as ZAPP <<Container>>
+  database "PostgreSQL ZA\n[Container: SQL]\nТолько субъекты/операции контура ZA" as ZDB
+  rectangle "Объекты, ключи, телеметрия ZA\n[Containers: региональные службы]" as ZOPS <<Container>>
+  ZAPP --> ZDB : SQL
+  ZAPP --> ZOPS : локальные зависимости
+}
+
+rectangle "Партнёры NG\n[External systems]\nПлатежи / логистика / сообщения\nТолько разрешённые потоки T-01" as NP <<External>>
+rectangle "Партнёры KE\n[External systems]\nM-Pesa / логистика / сообщения\nТолько разрешённые потоки T-01" as KP <<External>>
+Web --> NAPI : ng-domain / HTTPS
+Web --> KAPI : ke-domain / HTTPS
+Web ..> ZAPP : za-domain / после запуска
+NW --> NP : HTTPS / минимум данных
+NP --> NAPI : подписанные callbacks
+KW --> KP : HTTPS / минимум данных
+KP --> KAPI : подписанные callbacks
+
+legend bottom
+  C4 Level 2. Система: Africa Delivery; рамки показывают развёртывание по странам.
+  Backend — модульный монолит; worker — отдельный процесс того же приложения.
+  Между страновыми БД нет репликации и общей авторизации.
+  Внешний партнёр не считается локальным по названию: страны обработки проверяются отдельно.
+  Реплики, quorum, WAL и резервные площадки показаны в deployment-diagram.puml.
+endlegend
+@enduml
